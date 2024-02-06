@@ -1,0 +1,4 @@
+python3-pybeam: copyright-without-copyright-notice
+python3-pybeam: initial-upload-closes-no-bugs
+python3-pybeam: no-manual-page
+python3-pybeam: zero-byte-file-in-doc-directory
