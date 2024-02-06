@@ -1,0 +1,5 @@
+python-pybeam source: file-without-copyright-information
+python-pybeam source: no-debian-changes
+python-pybeam source: source-contains-prebuilt-windows-binary
+python-pybeam source: source-is-missing
+python-pybeam source: source-package-encodes-python-version
