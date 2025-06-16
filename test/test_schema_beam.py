@@ -57,6 +57,11 @@ class BEAMConstructTest(unittest.TestCase):
 		self.assertEqual(c.parse(b'\x00\x00\x00\x00'), [])
 		self.assertEqual(c.parse(b'\x00\x00\x00\x01\x08burtovoy'),[u"burtovoy"])
 		self.assertEqual(c.parse(b'\x00\x00\x00\x01\x10\xd0\x91\xd1\x83\xd1\x80\xd1\x82\xd0\xbe\xd0\xb2\xd0\xbe\xd0\xb9'),[u"\u0411\u0443\u0440\u0442\u043e\u0432\u043e\u0439"])
+	def test_chunk_atu8_long(self):
+		c = AtU8
+		self.assertEqual(c.parse(b'\x00\x00\x00\x00'), [])
+		self.assertEqual(c.parse(b'\xff\xff\xff\xff\x80burtovoy'),[u"burtovoy"])
+		self.assertEqual(c.parse(b'\xff\xff\xff\xff\x08\x10\xd0\x91\xd1\x83\xd1\x80\xd1\x82\xd0\xbe\xd0\xb2\xd0\xbe\xd0\xb9'),[u"\u0411\u0443\u0440\u0442\u043e\u0432\u043e\u0439"])
 	def test_chunk_attr(self):
 		c = Attr
 		self.assertEqual(c.parse(b'\x83\x64\x00\x08burtovoy'), u"burtovoy")

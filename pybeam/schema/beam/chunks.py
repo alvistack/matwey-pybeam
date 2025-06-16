@@ -24,12 +24,19 @@
 from construct import this
 from construct import (
 	Aligned,
+	Array,
 	Bytes,
 	Compressed,
+	ExprAdapter,
+	FocusedSeq,
 	GreedyBytes,
+	IfThenElse,
+	Int16ub,
+	Int32sb,
 	Int32ub,
 	Int8ub,
 	PascalString,
+	Peek,
 	Prefixed,
 	PrefixedArray,
 	Sequence,
@@ -40,7 +47,19 @@ from pybeam.schema.eetf import external_term
 
 Atom = PrefixedArray(Int32ub, PascalString(lengthfield=Int8ub, encoding="latin1"))
 
-AtU8 = PrefixedArray(Int32ub, PascalString(lengthfield=Int8ub, encoding="utf8"))
+_VarInt = FocusedSeq("value",
+	"len_code" / Peek(Int8ub),
+	"value" / IfThenElse(this.len_code & 0x8 == 0,
+		ExprAdapter(Int8ub,  encoder=lambda obj, ctx: obj, decoder=lambda obj, ctx: int(obj) >> 4),
+		ExprAdapter(Int16ub, encoder=lambda obj, ctx: obj, decoder=lambda obj, ctx: ((obj & 0xE000) >> 5) | (obj & 0xFF) )))
+
+AtU8_short = PrefixedArray(Int32ub, PascalString(lengthfield=Int8ub, encoding="utf8"))
+AtU8_long = FocusedSeq("items",
+	"count" / Int32sb,
+	"items" / Array(-this.count, PascalString(lengthfield=_VarInt, encoding="utf8")))
+AtU8 = FocusedSeq("table",
+	"count" / Peek(Int32sb),
+	"table" / IfThenElse(this.count < 0, AtU8_long, AtU8_short))
 
 Attr = external_term
 
