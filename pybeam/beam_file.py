@@ -61,8 +61,7 @@ class BeamFile(object):
 
 	@property
 	def literals(self):
-		litt = self.selectChunkByName(b"LitT")
-		return litt.entry if litt is not None else None
+		return self.selectChunkByName(b"LitT")
 
 	@property
 	def imports(self):
