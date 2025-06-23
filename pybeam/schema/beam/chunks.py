@@ -82,8 +82,9 @@ ImpT = Struct("entry" / PrefixedArray(Int32ub, Struct("module" / Int32ub,
 	"arity" / Int32ub)))
 
 uncomp_chunk_litt = PrefixedArray(Int32ub, Prefixed(Int32ub, external_term))
-LitT = Struct(Int32ub,
-	"entry" / Compressed(uncomp_chunk_litt, "zlib"))
+LitT = FocusedSeq("items",
+	"uncompressed_size" / Int32ub,
+	"items" / IfThenElse(this.uncompressed_size == 0, uncomp_chunk_litt, Compressed(uncomp_chunk_litt, "zlib")))
 
 LocT = PrefixedArray(Int32ub, Struct("function" / Int32ub,
 	"arity" / Int32ub,
